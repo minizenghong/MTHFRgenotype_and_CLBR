@@ -1,0 +1,314 @@
+---
+title: "The association of MTHFR C677T genotype and cumulative live birth"
+author:
+  - Hong Zeng
+  - Zefu Liu
+  - Lei Zhang
+  - Nenghui Liu
+documentclass: ctexart
+keywords:
+  - MTHFR
+  - cumulative live birth
+geometry: "left=0.5cm,right=0.5cm,top=1.0cm,bottom=1.0cm"
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 5
+---
+# Load data
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+load("MTHFR_original_data.Rdata")
+```
+
+# Baseline characteristics_Table1
+## Baseline characteristics comparision stratified by MTHFR C677T genotype using compareGroups package
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(compareGroups)
+# select patients with first ET cycle
+MTHFR <- subset(MTHFR_original, Time=="1", select = c(ID, Indication, MTHFR, MTHFRtype, Age, BMI, Total_AvailableEm, Total_GoodEm, No_ET, LiveBirth, CLB, InferType, InferYear, Protocol, EndoThick, EndoPattern, bFSH, bLH, E2, LH, P, GnStart, GnTotal, GnDay, Oocyte, Total_2PN, BiochemicalPregnancy, ClinicalPregnancy, PregnancyType, Miscarriage, MiscarraigeType, DeliveryType, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick, EmOrigin))
+# Baseline characteristics comparison stratified by MTHFR C677T genotype 
+table1_all <- descrTable(MTHFR~ Age+BMI+InferType+InferYear+Indication+Protocol+EndoThick+EndoPattern+bFSH+bLH+GnStart+GnTotal+GnDay+EmOrigin+No_ET, data=MTHFR, digits = 2, chisq.test.perm=T, chisq.test.seed=1234)
+# show table
+table1_all
+# export table to docx file
+# library(eoffice)
+# export2word(table1_all, file='table1_all.docx') 
+```
+
+## Baseline characteristics comparision stratified by MTHFR C677T genotype under different protocols
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Baseline characteristics comparison sub-grouped by protocol
+table1_protocol <- strataTable(table1_all, "Protocol") 
+table1_protocol
+# export table to docx file
+# export2word(table1_protocol, file='table1_protocol.docx') 
+```
+
+# Laboratory outcomes_Table2
+## Laboratory outcomes stratified by MTHFR C677T genotype using compareGroups package
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Laboratory outcomes comparison stratified by MTHFR C677T genotype 
+table2_all <- descrTable(MTHFR~ Oocyte+Total_AvailableEm+Total_GoodEm, data=MTHFR, digits = 2)
+# show table
+table2_all
+# export table to docx file
+# export2word(table2_all, file='table2_all.docx') 
+```
+
+
+## Laboratory outcomes comparision stratified by MTHFR C677T genotype under different protocols
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Laboratory outcomes comparision sub-grouped by protocol
+table2_protocol <- strataTable(table2_all, "Protocol") 
+table2_protocol
+# export table to docx file
+# export2word(table2_protocol, file='table2_protocol.docx') 
+```
+
+## Post-hoc multiple comparisons under GnRHa short protocol for the number of transferable embryos: 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_short <- subset(MTHFR, Protocol=="Short protocol", select = c(Indication, MTHFR, MTHFRtype, Age, BMI, Total_AvailableEm, Total_GoodEm, No_ET, LiveBirth, CLB, InferType, InferYear, EndoThick, EndoPattern, bFSH, Oocyte, Total_2PN, BiochemicalPregnancy, ClinicalPregnancy, PregnancyType, Miscarriage, MiscarraigeType, DeliveryType, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick))#select dataframe including patients undergoing GnRHa short protocol
+descrTable(MTHFR~Total_AvailableEm, data=MTHFR_short, digits = 2, show.p.mul=T, p.corrected = F)#multiple comparison
+```
+
+## Post-hoc multiple comparisons under GnRHa short protocol for the number of good-quality embryos: 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_short <- subset(MTHFR, Protocol=="Short protocol", select = c(Indication, MTHFR, MTHFRtype, Age, BMI, Total_AvailableEm, Total_GoodEm, No_ET, LiveBirth, CLB, InferType, InferYear, EndoThick, EndoPattern, bFSH, Oocyte, Total_2PN, BiochemicalPregnancy, ClinicalPregnancy, PregnancyType, Miscarriage, MiscarraigeType, DeliveryType, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick))#select dataframe including patients undergoing GnRHa short protocol
+descrTable(MTHFR~Total_GoodEm, data=MTHFR_short, digits = 2, show.p.mul=T, p.corrected = F)#multiple comparison
+```
+
+# Clinical outcomes_Table3
+## Clinical outcomes stratified by MTHFR C677T genotype using compareGroups package
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Clinical outcomes comparison stratified by MTHFR C677T genotype 
+table3_all <- descrTable(MTHFR~ BiochemicalPregnancy+ClinicalPregnancy+Miscarriage+LiveBirth+CLB, data=MTHFR, digits = 2)
+# show table
+table3_all
+# export table to docx file
+# export2word(table3_all, file='table3_all.docx') 
+```
+
+## Clinical outcomes comparision stratified by MTHFR C677T genotype under different protocols
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Clinical outcomes comparison sub-grouped by protocol
+table3_protocol <- strataTable(table3_all, "Protocol") 
+table3_protocol
+# export table to docx file
+# export2word(table3_protocol, file='table3_protocol.docx') 
+```
+
+## Post-hoc multiple comparisons under GnRHa short protocol for the cumulative live birth rate: 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_short <- subset(MTHFR, Protocol=="Short protocol", select = c(Indication, MTHFR, MTHFRtype, Age, BMI, Total_AvailableEm, Total_GoodEm, No_ET, LiveBirth, CLB, InferType, InferYear, EndoThick, EndoPattern, bFSH, Oocyte, Total_2PN, BiochemicalPregnancy, ClinicalPregnancy, PregnancyType, Miscarriage, MiscarraigeType, DeliveryType, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick))#select dataframe including patients undergoing GnRHa short protocol
+descrTable(MTHFR~CLB, data=MTHFR_short, digits = 2, show.p.mul=T, p.corrected = F)#multiple comparison
+```
+
+# Interactive analysis and Multivariate analysis
+## Interactive analysis for the number of transferable embryos:
+### Poisson multivariate analysis without considering the interactive effect with protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+fit_AvailableEm1 <- glm(Total_AvailableEm~MTHFR+Cat_age+Cat_BMI+Indication+InferType+Protocol, data=MTHFR, family = poisson())
+summary(fit_AvailableEm1)
+```
+
+### Poisson multivariate analysis considering the interactive effect with protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+fit_AvailableEm2 <- glm(Total_AvailableEm~MTHFR+Cat_age+Cat_BMI+Indication+InferType+Protocol+MTHFR:Protocol, data=MTHFR, family = poisson())
+summary(fit_AvailableEm2)
+```
+
+### P for interaction for the number of transferable embryos
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(lmtest)
+lrtest(fit_AvailableEm1, fit_AvailableEm2)
+```
+
+## Poisson Multivariate analysis revealed the association of MTHFR C677T genotype with the number of transferable embryos under different protocols
+### Poisson Multivariate analysis revealed the association of MTHFR C677T genotype with the number of transferable embryos under GnRHa short protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+fit_AvailableEm_short <- glm(Total_AvailableEm~MTHFR+Cat_age+Cat_BMI+Indication+InferType, data=MTHFR_short, family = poisson())
+summary(fit_AvailableEm_short)
+```
+
+```{r eval=FALSE, include=FALSE}
+# exp_AvailableEm_short <- exp(coef(fit_AvailableEm_short))
+# conf_AvailableEm_short <- exp(confint(fit_AvailableEm_short))
+# OR_AvailableEm_short <- data.frame(exp_AvailableEm_short, conf_AvailableEm_short)
+# write.table(OR_AvailableEm_short, "OR_AvailableEm_short.csv", row.names = T, sep = "\t")
+```
+
+
+### Poisson Multivariate analysis revealed the association of MTHFR C677T genotype with the number of transferable embryos under GnRHa long protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_long <- subset(MTHFR, Protocol=="Long protocol", select = c(Indication, MTHFR, MTHFRtype, Age, BMI, Total_AvailableEm, Total_GoodEm, No_ET, LiveBirth, CLB, InferType, InferYear, EndoThick, EndoPattern, bFSH, Oocyte, Total_2PN, BiochemicalPregnancy, ClinicalPregnancy, PregnancyType, Miscarriage, MiscarraigeType, DeliveryType, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick))#select dataframe including patients undergoing GnRHa long protocol
+fit_AvailableEm_long <- glm(Total_AvailableEm~MTHFR+Cat_age+Cat_BMI+Indication+InferType, data=MTHFR_long, family = poisson())
+summary(fit_AvailableEm_long)
+```
+
+```{r eval=FALSE, include=FALSE}
+# exp_AvailableEm_long <- exp(coef(fit_AvailableEm_long))
+# conf_AvailableEm_long <- exp(confint(fit_AvailableEm_long))
+# OR_AvailableEm_long <- data.frame(exp_AvailableEm_long, conf_AvailableEm_long)
+# write.table(OR_AvailableEm_long, "OR_AvailableEm_long.csv", row.names = T, sep = "\t")
+```
+
+## Interactive analysis for the number of good-quality embryos:
+### Poisson multivariate analysis without considering the interactive effect with protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+fit_Goodembryo1 <- glm(Total_GoodEm~MTHFR+Cat_age+Cat_BMI+Indication+Protocol+InferType, data=MTHFR, family = poisson())
+summary(fit_Goodembryo1)
+exp1<-exp(coef(fit_Goodembryo1))
+confint1 <- exp(confint(fit_Goodembryo1)) 
+```
+
+### Poisson multivariate analysis considering the interactive effect with protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+fit_Goodembryo2 <- glm(Total_GoodEm~MTHFR+Cat_age+Cat_BMI+Indication+Protocol+InferType+MTHFR:Protocol, data=MTHFR, family = poisson())
+summary(fit_Goodembryo2)
+```
+
+### P for interaction for the number of good-quality embryos
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(lmtest)
+lrtest(fit_Goodembryo1, fit_Goodembryo2)
+```
+
+## Poisson Multivariate analysis revealed the association of MTHFR C677T genotype with the number of good-quality embryos under different protocols
+### Poisson Multivariate analysis revealed the association of MTHFR C677T genotype with the number of good-quality embryos under GnRHa long protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_long <- subset(MTHFR, Protocol=="Long protocol", select = c(Indication, MTHFR, MTHFRtype, Age, BMI, Total_AvailableEm, Total_GoodEm, No_ET, LiveBirth, CLB, InferType, InferYear, EndoThick, EndoPattern, bFSH, Oocyte, Total_2PN, BiochemicalPregnancy, ClinicalPregnancy, PregnancyType, Miscarriage, MiscarraigeType, DeliveryType, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick))
+fit_Goodembryo_long <- glm(Total_GoodEm~MTHFR+Cat_age+Cat_BMI+Indication+InferType, data=MTHFR_long, family = poisson())
+summary(fit_Goodembryo_long)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+exp_Goodembryo_long <- exp(coef(fit_Goodembryo_long))
+conf_Goodembryo_long <- exp(confint(fit_Goodembryo_long))
+OR_Goodembryo_long <- data.frame(exp_Goodembryo_long, conf_Goodembryo_long)
+write.table(OR_Goodembryo_long, "OR_GoodEm_long.csv", row.names = T, sep = "\t")
+```
+
+### Poisson Multivariate analysis revealed the association of MTHFR C677T genotype with the number of good-quality embryos under GnRHa short protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_short <- subset(MTHFR, Protocol=="Short protocol", select = c(Indication, MTHFR, MTHFRtype, Age, BMI, Total_AvailableEm, Total_GoodEm, No_ET, LiveBirth, CLB, InferType, InferYear, EndoThick, EndoPattern, bFSH, Oocyte, Total_2PN, BiochemicalPregnancy, ClinicalPregnancy, PregnancyType, Miscarriage, MiscarraigeType, DeliveryType, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick))
+fit_Goodembryo_short <- glm(Total_GoodEm~MTHFR+Cat_age+Cat_BMI+Indication+InferType, data=MTHFR_short, family = poisson())
+summary(fit_Goodembryo_short)
+```
+
+
+```{r eval=FALSE, include=FALSE}
+# exp_Goodembryo_short <- exp(coef(fit_Goodembryo_short))
+# conf_Goodembryo_short <- exp(confint(fit_Goodembryo_short))
+# OR_Goodembryo_short <- data.frame(exp_Goodembryo_short, conf_Goodembryo_short)
+# write.table(OR_Goodembryo_short, "OR_GoodEm_short.csv", row.names = T, sep = "\t")
+```
+
+## Interative analysis for cumulative live birth:
+### Cox multivariate analysis without considering the interactive effect with protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# select the dataframe for Cox regression
+MTHFR_cox <- subset(MTHFR_original, select = c(ID, Indication, MTHFR, Age, BMI, CLB, Time, Status, InferType, InferYear, Protocol, EndoThick, EndoPattern, Cat_age, Cat_BMI, Cat_InferYear, Cat_EndoThick))
+# library packages
+library(survival)
+library(survminer)
+# Cox regression
+mycox_1 <- coxph(Surv(Time,Status)~MTHFR+Cat_age+Cat_BMI+Indication+Protocol+InferType, data=MTHFR_cox, id=ID)
+summary(mycox_1)
+```
+
+
+### Cox multivariate analysis considering the interactive effect with protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+mycox_2 <- coxph(Surv(Time,Status)~MTHFR+Cat_age+Cat_BMI+Indication+Protocol+InferType+MTHFR:Protocol, data=MTHFR_cox, id=ID)
+summary(mycox_2)
+```
+
+### P for interaction for cumulative live birth
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(lmtest)
+lrtest(mycox_1, mycox_2)
+```
+
+## Cox Multivariate analysis revealed the association of MTHFR C677T genotype with cumulative live birth under different protocols
+### Cox Multivariate analysis revealed the association of MTHFR C677T genotype with cumulative live birth under GnRHa short protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_cox_short <- subset(MTHFR_cox, Protocol=="Short protocol")
+mycox_short <- coxph(Surv(Time,Status)~MTHFR+Cat_age+Cat_BMI+Indication+InferType, data=MTHFR_cox_short, id=ID)
+summary(mycox_short)
+```
+
+### Cox Multivariate analysis revealed the association of MTHFR C677T genotype with cumulative live birth under GnRHa long protocol
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+MTHFR_cox_long <- subset(MTHFR_cox, Protocol=="Long protocol")
+mycox_long <- coxph(Surv(Time,Status)~MTHFR+Cat_age+Cat_BMI+Indication+InferType, data=MTHFR_cox_long, id=ID)
+summary(mycox_long)
+```
+
+# Statistical power estimation
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#pwr包
+# install.packages("pwr")
+# library package
+library(pwr)
+# data<-c(0.23,0.228,0.178,0.269,0.029,0.065)
+# prob<-matrix(data,byrow = TRUE,nrow = 3)
+# ES.w2(prob)
+# pwr.chisq.test(w=0.13, N=443, df=2, sig.level = .1)
+# pwr.chisq.test(w=0.13, df=2, sig.level = 0.05, power = 0.75)
+# pwr.t2n.test(n1=203,n2=43, sig.level=0.05, d=0.2)
+
+# Statistical power curve
+library(pwr)
+sig <- c(0.01, 0.05, 0.10, 0.15, 0.20)
+length_sig <- length(sig)
+
+power <- NULL
+for (i in 1:length_sig){
+    result <- pwr.anova.test(k=3, f=0.24, sig.level=sig[i], n=43)
+    power[i] <- result$power
+}
+
+plot(sig, power, type="l", lwd=2, col="red",
+     xlab="significance level",
+     ylab="power",
+     main = ""
+     )
+
+power_2 <- NULL
+for (i in 1:length_sig){
+    result <- pwr.anova.test(k=3, f=0.45, sig.level=sig[i], n=43)
+    power_2[i] <- result$power
+}
+
+plot(sig, power_2, type="l", lwd=2, col="red",
+     xlab="significance level",
+     ylab="power",
+     main = ""
+     )
+
+power_3<- NULL
+for (i in 1:length_sig){
+    result <- pwr.chisq.test(w=0.13, N=443, df=2, sig.level = sig[i])
+    power_3[i] <- result$power
+}
+
+plot(sig, power_3, type="l", lwd=2, col="red",
+     xlab="significance level",
+     ylab="power",
+     main = ""
+     )
+
+xrange <- c(0.05,0.20)                  
+yrange <- c(0.65,1)
+plot(xrange, yrange, type="n",
+     xlab="significance leve",
+     ylab="power" )
+lines(sig, power, type = "l", lwd=2, col="red")
+lines(sig, power_2, type = "l", lwd=2, col="blue")
+lines(sig, power_3, type = "l", lwd=2, col="green")
+title("Statistical Power Estimation\n Curve for Each Outcome")                   
+legend(x=0.048, y=0.98, title="Outcomes", legend = c("NoTE", "NoGE", "CLBR"),fill = c("red", "blue", "green"), cex=0.8) 
+dev.off()
+```
